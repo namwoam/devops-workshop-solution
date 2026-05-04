@@ -5,7 +5,7 @@ description = "A sentiment analysis tool using OpenAI API"
 authors = ["namwoam <namwoam@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.9,<3.14"
 openai = "^1.0"
 dspy-ai = "^2.0"
 
