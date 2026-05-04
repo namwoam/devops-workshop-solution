@@ -1,3 +1,6 @@
+import ast
+import json
+
 import dspy
 from dspy import ChainOfThought, Signature
 
@@ -49,11 +52,33 @@ class NamedEntityExtractor(dspy.Module):
     def forward(self, text: str) -> list[str]:
         """Extract named entities from the input text."""
         result = self.extractor(text=text)
-        entities = result.entities
-        if isinstance(entities, str):
-            # If the model returns a string, split it into a list
-            entities = [e.strip() for e in entities.split(",") if e.strip()]
-        return entities
+        return _normalize_entities(result.entities)
+
+
+def _normalize_entities(entities) -> list[str]:
+    """Normalize DSPy entity outputs across parser/model versions."""
+    if isinstance(entities, str):
+        parsed_entities = None
+        for parser in (json.loads, ast.literal_eval):
+            try:
+                parsed_entities = parser(entities)
+                break
+            except (ValueError, SyntaxError, TypeError, json.JSONDecodeError):
+                continue
+
+        if isinstance(parsed_entities, list):
+            entities = parsed_entities
+        else:
+            entities = entities.strip().strip("[]").split(",")
+
+    if not isinstance(entities, list):
+        return []
+
+    return [
+        str(entity).strip().strip("\"'")
+        for entity in entities
+        if str(entity).strip().strip("\"'")
+    ]
 
 
 # Initialize the analyzer module
