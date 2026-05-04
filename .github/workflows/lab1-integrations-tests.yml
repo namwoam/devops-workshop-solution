@@ -32,17 +32,21 @@ jobs:
     - name: Install dependencies
       run: |
         cd lab1
-        poetry install
+        poetry install --no-root
 
     - name: Run integration tests
       run: |
         cd lab1
         poetry run pytest -v --tb=short
+      env:
+        PYTHONPATH: ..
 
     - name: Generate coverage report
       run: |
         cd lab1
         poetry run pytest -v --cov=lib --cov-report=xml
+      env:
+        PYTHONPATH: ..
       if: always()
 
     - name: Upload coverage to Codecov

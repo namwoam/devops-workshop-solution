@@ -38,11 +38,15 @@ jobs:
       run: |
         cd lab2
         poetry run pytest -v --tb=short
+      env:
+        PYTHONPATH: ..
 
     - name: Generate coverage report
       run: |
         cd lab2
         poetry run pytest -v --cov=util --cov-report=xml
+      env:
+        PYTHONPATH: ..
       if: always()
 
     - name: Upload coverage to Codecov
