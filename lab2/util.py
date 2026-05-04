@@ -37,8 +37,8 @@ class NamedEntityExtractionSignature(Signature):
     """Extract named entities from the given text."""
 
     text: str = dspy.InputField(desc="The text to analyze")
-    entities: list[str] = dspy.OutputField(
-        desc="A list of named entities found in the text"
+    entities: str = dspy.OutputField(
+        desc="A JSON array of named entities found in the text"
     )
 
 
