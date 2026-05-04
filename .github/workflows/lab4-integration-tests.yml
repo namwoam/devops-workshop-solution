@@ -1,6 +1,7 @@
-name: Lab4 Integration Tests
+name: Lab4 Continuous Deployment
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main, develop ]
     paths:
@@ -21,11 +22,14 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  test:
+  build-test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: lab4
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Node
       uses: actions/setup-node@v4
@@ -35,24 +39,19 @@ jobs:
         cache-dependency-path: lab4/package-lock.json
 
     - name: Install dependencies
-      run: |
-        cd lab4
-        npm ci
+      run: npm ci
 
     - name: Install Playwright browsers
-      run: |
-        cd lab4
-        npx playwright install --with-deps chromium
+      run: npx playwright install --with-deps chromium
+
+    - name: Lint
+      run: npm run lint
 
     - name: Build
-      run: |
-        cd lab4
-        npm run build
+      run: npm run build
 
     - name: Run integration tests
-      run: |
-        cd lab4
-        npm run test:e2e
+      run: npm run test:e2e
 
     - name: Upload Playwright report
       uses: actions/upload-artifact@v4
@@ -69,7 +68,7 @@ jobs:
         path: lab4/dist
 
   deploy:
-    needs: test
+    needs: build-test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment:
