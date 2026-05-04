@@ -1,0 +1,54 @@
+name: Lab4 Integration Tests
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+    - 'lab4/**'
+    - '.github/workflows/lab4-integration-tests.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+    - 'lab4/**'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+        cache-dependency-path: lab4/package-lock.json
+
+    - name: Install dependencies
+      run: |
+        cd lab4
+        npm ci
+
+    - name: Install Playwright browsers
+      run: |
+        cd lab4
+        npx playwright install --with-deps chromium
+
+    - name: Build
+      run: |
+        cd lab4
+        npm run build
+
+    - name: Run integration tests
+      run: |
+        cd lab4
+        npm run test:e2e
+
+    - name: Upload Playwright report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: lab4-playwright-report
+        path: lab4/playwright-report/
+        retention-days: 30
