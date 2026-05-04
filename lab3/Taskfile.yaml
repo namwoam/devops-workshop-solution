@@ -1,0 +1,24 @@
+version: '3'
+
+tasks:
+  test:
+    desc: Run all tests with pytest
+    cmds:
+    - poetry run pytest -v
+
+  test:coverage:
+    desc: Run tests with coverage report
+    cmds:
+    - poetry run pytest -v --cov=user --cov-report=term-missing
+
+  install:
+    desc: Install project dependencies
+    cmds:
+    - poetry install
+
+  clean:
+    desc: Remove test artifacts and cache
+    cmds:
+    - find . -type d -name __pycache__ -exec rm -rf {} +
+    - find . -type f -name "*.pyc" -delete
+    - rm -rf .pytest_cache .coverage htmlcov

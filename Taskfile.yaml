@@ -1,0 +1,24 @@
+version: '3'
+
+tasks:
+  test:
+    desc: Run pytest for the lab1 exercises
+    cmds:
+    - cd lab1 && poetry run pytest -v
+
+  test:coverage:
+    desc: Run pytest with coverage for the lab1 module
+    cmds:
+    - cd lab1 && poetry run pytest -v --cov=lib --cov-report=term-missing
+
+  install:
+    desc: Install lab1 dependencies with Poetry
+    cmds:
+    - cd lab1 && poetry install
+
+  clean:
+    desc: Remove test artifacts and cache from lab1
+    cmds:
+    - cd lab1 && find . -type d -name __pycache__ -exec rm -rf {} +
+    - cd lab1 && find . -type f -name "*.pyc" -delete
+    - cd lab1 && rm -rf .pytest_cache .coverage htmlcov

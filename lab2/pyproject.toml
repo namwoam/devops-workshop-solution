@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "sentiment-analysis"
+version = "0.1.0"
+description = "A sentiment analysis tool using OpenAI API"
+authors = ["namwoam <namwoam@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+openai = "^1.0"
+dspy-ai = "^2.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0"
+pytest-cov = "^4.0"
+litellm = "^1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+testpaths = ["."]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
